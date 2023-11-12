@@ -1,5 +1,5 @@
 const express = require('express');
-const request = require('request');
+const axios = require('axios');
 const cheerio = require('cheerio');
 
 const app = express();
@@ -7,164 +7,36 @@ const PORT = process.env.PORT || 3000;
 
 app.use(express.json());
 
-function scrapeLink(url) {
-    return new Promise((resolve, reject) => {
-        request(url, (error, response, html) => {
-            if (!error) {
-                const $ = cheerio.load(html);
-                const link = $('.main-button.dlbutton').attr('href');
-                resolve(link);
-            } else {
-                reject(error);
-            }
-        });
-    });
-}
-
-function getPage(url) {
-    return new Promise((resolve, reject) => {
-        request(url, (error, response, html) => {
-            if (!error) {
-                const $ = cheerio.load(html);
-                const divs = $('.cont_display');
-                const data = [];
-
-                for (let i = 2; i < divs.length; i++) {
-                    const title = $(divs[i]).find('a');
-                    const img = $(divs[i]).find('img');
-                    const dat = { title: title.attr('title'), image: img.attr('src'), link: title.attr('href') };
-                    data.push(dat);
-                }
-
-                resolve(data);
-            } else {
-                reject(error);
-            }
-        });
-    });
-}
-
-app.get('/search', async (req, res) => {
-    const query = req.query.query;
-    const url = `https://ww7.5movierulz.gd/?s=${query}`;
+app.get('/scrape', async (req, res) => {
+    const targetUrl = 'https://ww7.5movierulz.gd/tantiram-2023-hdrip-telugu-full-movie-watch-online-free/';
 
     try {
-        const data = await getPage(url);
-        const total = data.length;
-        const mainData = { status: true, totalFound: total, url, data };
-        res.json(mainData);
-    } catch (error) {
-        const mainData = { status: false, msg: 'No Data Found' };
-        res.json(mainData);
-    }
-});
-
-app.get('/:language/:page', async (req, res) => {
-    const { language, page } = req.params;
-    const pageNumber = page || 1;
-    let url;
-
-    switch (language) {
-        case 'telugu':
-            url = `https://ww7.5movierulz.gd/telugu-movie/page/${pageNumber}`;
-            break;
-        // Add other cases for different languages
-        default:
-            url = null;
-    }
-
-    if (url) {
-        try {
-            const data = await getPage(url);
-            const total = data.length;
-            const mainData = { status: true, totalFound: total, url, data };
-            res.json(mainData);
-        } catch (error) {
-            const mainData = { status: false };
-            res.json(mainData);
-        }
-    } else {
-        const mainData = { status: false };
-        res.json(mainData);
-    }
-});
-
-app.get('/', async (req, res) => {
-    const url = 'https://ww7.5movierulz.gd/';
-    try {
-        const data = await getPage(url);
-        const total = data.length;
-        const mainData = { status: true, totalFound: total, url, data };
-        res.json(mainData);
-    } catch (error) {
-        const mainData = { status: false };
-        res.json(mainData);
-    }
-});
-
-app.get('/get', async (req, res) => {
-    const url = req.query.url;
-    try {
-        const data = await getMovie(url);
+        const data = await scrapeData(targetUrl);
         res.json(data);
     } catch (error) {
-        const data = { status: false, msg: 'Unable to get data' };
-        res.json(data);
+        res.status(500).json({ error: error.message });
     }
 });
 
-async function getMovie(url) {
-    return new Promise((resolve, reject) => {
-        request(url, (error, response, html) => {
-            if (!error) {
-                const $ = cheerio.load(html);
-                const title = $('h2.entry-title').text().replace('Full Movie Watch Online Free', '');
-                const image = $('img.attachment-post-thumbnail.size-post-thumbnail.wp-post-image').attr('src');
-                const description = $('p').eq(4).text();
-                const torrents = $('a.mv_button_css');
-                const torrent = [];
-                const otherLinks = [];
+async function scrapeData(url) {
+    try {
+        const response = await axios.get(url);
+        const $ = cheerio.load(response.data);
 
-                torrents.each((index, element) => {
-                    const link = $(element).attr('href');
-                    const size = $(element).find('small').eq(0).text();
-                    const quality = $(element).find('small').eq(1).text();
-                    const data = { magnet: link, size, quality };
-                    torrent.push(data);
-                });
+        // Example: Extracting data from HTML elements
+        const title = $('title').text();
+        const paragraphs = $('p').map((index, element) => $(element).text()).get();
 
-                $('p').each(async (index, element) => {
-                    const strongText = $(element).find('strong').text();
-                    if (strongText && strongText.includes('Watch Online –')) {
-                        const typ = strongText.split('–')[1].trim();
-                        const lin = $(element).find('a').attr('href');
-                        try {
-                            const lin = await scrapeLink(lin);
-                            const data = { type: typ, url: lin };
-                            otherLinks.push(data);
-                        } catch (error) {
-                            const data = { type: typ, url: lin };
-                            otherLinks.push(data);
-                        }
-                    }
-                });
+        // Example: Creating a data object
+        const data = {
+            title: title,
+            paragraphs: paragraphs,
+        };
 
-                const data = {
-                    status: true,
-                    url,
-                    title,
-                    description,
-                    image,
-                    torrent,
-                    otherLinks,
-                };
-
-                resolve(data);
-            } else {
-                reject(error);
-            }
-        });
-    });
+        return data;
+    } catch (error) {
+        throw error;
+    }
 }
 
 app.listen(PORT, () => {

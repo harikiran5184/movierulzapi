@@ -25,7 +25,7 @@ def scrape_data(url):
 
 @app.route('/scrape')
 def scrape_route():
-    target_url = 'https://ww7.5movierulz.gd'
+    target_url = 'https://gov.ibomma.link/telugu-movies/'
     try:
         data = scrape_data(target_url)
         return jsonify(data)

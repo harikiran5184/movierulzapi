@@ -32,6 +32,7 @@ def get_movie(url:str)->dict:
     title = soup.find("h2",class_="entry-title").text.replace("Full Movie Watch Online Free","")
     image = soup.find("img",class_="attachment-post-thumbnail size-post-thumbnail wp-post-image")['src']
     description = soup.find_all("p")[4].text
+    cast=soup.find_all("p")[3].text
     torrents = soup.find_all("a",class_="mv_button_css")
     torrent = []
     other_links = []
@@ -54,7 +55,7 @@ def get_movie(url:str)->dict:
                 except:
                     data = {"type":typ,"url":lin}
                     other_links.append(data)
-    data = {"status":True,"url":url,"title":title,"description":description,"image":image,"torrent":torrent,"other_links":other_links}
+    data = {"status":True,"url":url,"title":title,"cast":cast,"description":description,"image":image,"torrent":torrent,"other_links":other_links}
     return data
 
 

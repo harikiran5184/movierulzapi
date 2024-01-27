@@ -83,7 +83,7 @@ def get_home(language:str,page:int):
     elif language == "malayalam":
         url = "https://ww7.5movierulz.gd/malayalam-movie-online/page/"+str(page)
     elif language == "english":
-        url = "https://ww7.5movierulz.gd/category/hollywood-movie-2023/"+str(page)
+        url = "https://ww7.5movierulz.gd/category/hollywood-movie-2023/"
     else:
         url = None
     if url != None:

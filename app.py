@@ -55,7 +55,7 @@ def get_movie(url:str)->dict:
              #   except:
               #      data = {"type":typ,"url":lin}
                #     other_links.append(data)
-    data = {"status":True,"url":url,"title":title,"cast":cast,"description":description,"image":image,"torrent":torrent,"other_links":other_links}
+    data = {"status":True,"url":url,"title":title,"cast":cast,"description":description,"image":image,"torrent":torrent}
     return data
 
 

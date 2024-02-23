@@ -43,18 +43,18 @@ def get_movie(url:str)->dict:
         data = {"magnet":link,"size":size,"quality":quality}
         torrent.append(data)
     ps = soup.find_all("p")
-    for p in ps:
-        if p.find("strong"):
-            if "Watch Online –" in p.find("strong").text:
-                typ = p.find("strong").text.split("–")[-1]
-                lin = p.find("a")['href']
-                try:
-                    lin = scape_link(lin)
-                    data = {"type":typ,"url":lin}
-                    other_links.append(data)
-                except:
-                    data = {"type":typ,"url":lin}
-                    other_links.append(data)
+    #for p in ps:
+     #   if p.find("strong"):
+      #      if "Watch Online –" in p.find("strong").text:
+       #         typ = p.find("strong").text.split("–")[-1]
+        #        lin = p.find("a")['href']
+         #       try:
+          #          lin = scape_link(lin)
+           #         data = {"type":typ,"url":lin}
+            #        other_links.append(data)
+             #   except:
+              #      data = {"type":typ,"url":lin}
+               #     other_links.append(data)
     data = {"status":True,"url":url,"title":title,"cast":cast,"description":description,"image":image,"torrent":torrent,"other_links":other_links}
     return data
 

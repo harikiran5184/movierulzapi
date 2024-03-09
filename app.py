@@ -68,7 +68,7 @@ def get_movie(url:str)->dict:
 @app.route("/search",methods=["GET"])
 def search():
     a = request.args.get("query")
-    url = f"https://ww7.5movierulz.gd/?s={a}"
+    url = f"https://5movierulz.rest/?s={a}"
     try:
         data = get_page(url)
         total = len(data)

@@ -30,10 +30,15 @@ def get_movie(url:str)->dict:
     req = requests.get(url).content
     soup = BeautifulSoup(req,"html.parser")
     title = soup.find("h2",class_="entry-title").text.replace("Full Movie Watch Online Free","")
+    print(title)
     image = soup.find("img",class_="attachment-post-thumbnail size-post-thumbnail wp-post-image")['src']
+    print(image)
     description = soup.find_all("p")[4].text
+    print(description)
     cast=soup.find_all("p")[3].text
+    print(cast)
     torrents = soup.find_all("a",class_="mv_button_css")
+    print(torrents)
     torrent = []
     other_links = []
     for tor in torrents:
@@ -43,19 +48,20 @@ def get_movie(url:str)->dict:
         data = {"magnet":link,"size":size,"quality":quality}
         torrent.append(data)
     ps = soup.find_all("p")
-    #for p in ps:
-     #   if p.find("strong"):
-      #      if "Watch Online –" in p.find("strong").text:
-       #         typ = p.find("strong").text.split("–")[-1]
-        #        lin = p.find("a")['href']
-         #       try:
-          #          lin = scape_link(lin)
-           #         data = {"type":typ,"url":lin}
-            #        other_links.append(data)
-             #   except:
-              #      data = {"type":typ,"url":lin}
-               #     other_links.append(data)
-    data = {"status":True,"url":url,"title":title,"cast":cast,"description":description,"image":image,"torrent":torrent,"other_links":other_links}
+    # print(ps)
+    # for p in ps:
+    #     if p.find("strong"):
+    #         if "Watch Online –" in p.find("strong").text:
+    #             typ = p.find("strong").text.split("–")[-1]
+    #             lin = p.find("a")['href']
+    #             try:
+    #                 lin = scape_link(lin)
+    #                 data = {"type":typ,"url":lin}
+    #                 other_links.append(data)
+    #             except:
+    #                 data = {"type":typ,"url":lin}
+    #                 other_links.append(data)
+    data = {"status":True,"url":url,"title":title,"cast":cast,"description":description,"image":image,"torrent":torrent}
     return data
 
 
@@ -96,7 +102,7 @@ def get_home(language:str,page:int):
 
 @app.route("/")
 def home():
-    url = "https://ww7.5movierulz.gd/"
+    url = "https://5movierulz.red/"
     data = get_page(url)
     total = len(data)
     main_data = {"status":True,"total_found":total,"url":url,"data":data}
@@ -119,4 +125,4 @@ def get_s():
         return jsonify(data)
 
 if __name__ == "__main__":
-    app.run()
+    app.run(port=5500)

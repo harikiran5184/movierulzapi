@@ -81,13 +81,13 @@ def search():
 def get_home(language:str,page:int):
     page = 1 if page == None else page
     if language == "telugu":
-        url = "https://ww7.5movierulz.gd/telugu-movie/page/"+str(page)
+        url = "https://5movierulz.rest/telugu-movie/page/"+str(page)
     elif language == "hindi":
-        url = "https://ww7.5movierulz.gd/bollywood-movie-free/page/"+str(page)
+        url = "https://5movierulz.rest/bollywood-movie-free/page/"+str(page)
     elif language == "tamil":
-        url = "https://ww7.5movierulz.gd/tamil-movie-free/page/"+str(page)
+        url = "https://5movierulz.rest/tamil-movie-free/page/"+str(page)
     elif language == "malayalam":
-        url = "https://ww7.5movierulz.gd/malayalam-movie-online/page/"+str(page)
+        url = "https://5movierulz.rest/malayalam-movie-online/page/"+str(page)
     elif language == "english":
         url = "https://5movierulz.vet/category/hollywood-movie-2023/page/"+str(page)
     else:

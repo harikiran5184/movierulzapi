@@ -102,7 +102,7 @@ def get_home(language:str,page:int):
 
 @app.route("/")
 def home():
-    url = "https://5movierulz.red/"
+    url = "https://5movierulz.pics/"
     data = get_page(url)
     total = len(data)
     main_data = {"status":True,"total_found":total,"url":url,"data":data}

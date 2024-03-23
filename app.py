@@ -83,13 +83,13 @@ def get_home(language:str,page:int):
     if language == "telugu":
         url = "https://www.5movierulz.blog/category/telugu-featured/page/"+str(page)
     elif language == "hindi":
-        url = "https://5movierulz.rest/bollywood-movie-free/page/"+str(page)
+        url = "https://www.5movierulz.blog/category/bollywood-featured/page/"+str(page)
     elif language == "tamil":
-        url = "https://5movierulz.rest/tamil-movie-free/page/"+str(page)
+        url = "https://www.5movierulz.blog/category/tamil-featured/page/"+str(page)
     elif language == "malayalam":
-        url = "https://5movierulz.rest/malayalam-movie-online/page/"+str(page)
+        url = "https://www.5movierulz.blog/category/malayalam-featured/page/"+str(page)
     elif language == "english":
-        url = "https://5movierulz.pics/category/hollywood-movie-2023/page/"+str(page)
+        url = "https://www.5movierulz.blog/category/hollywood-featured/page/"+str(page)
     else:
         url = None
     if url != None:

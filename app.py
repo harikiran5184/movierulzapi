@@ -81,7 +81,7 @@ def search():
 def get_home(language:str,page:int):
     page = 1 if page == None else page
     if language == "telugu":
-        url = "https://5movierulz.rest/telugu-movie/page/"+str(page)
+        url = "https://www.5movierulz.blog/category/telugu-featured/page/"+str(page)
     elif language == "hindi":
         url = "https://5movierulz.rest/bollywood-movie-free/page/"+str(page)
     elif language == "tamil":

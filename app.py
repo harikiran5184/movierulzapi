@@ -68,7 +68,7 @@ def get_movie(url:str)->dict:
 @app.route("/search",methods=["GET"])
 def search():
     a = request.args.get("query")
-    url = f"https://5movierulz.rest/?s={a}"
+    url = f"https://www.5movierulz.blog/?s={a}"
     try:
         data = get_page(url)
         total = len(data)
@@ -102,7 +102,7 @@ def get_home(language:str,page:int):
 
 @app.route("/")
 def home():
-    url = "https://5movierulz.pics/"
+    url = "https://www.5movierulz.blog/"
     data = get_page(url)
     total = len(data)
     main_data = {"status":True,"total_found":total,"url":url,"data":data}

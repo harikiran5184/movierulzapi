@@ -121,7 +121,7 @@ def get_s():
         data = get_movie(a)
         return jsonify(data)
     except:
-        data = {"status":False,"msg":"Unable to get data"}
+        data = {"status":True,"url":a,"title":"SERVER IS PROGRESS","cast":"UNAVAILBLE","description":"UNAVAILBLE","image":"https://www.shutterstock.com/image-vector/rubber-duck-icon-600nw-71466952.jpg","torrent":[]}
         return jsonify(data)
 
 if __name__ == "__main__":

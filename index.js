@@ -143,7 +143,7 @@ async function getMovie(url) {
                     const link = $(element).attr('href');
                     const size = $(element).find('small').eq(0).text();
                     const quality = $(element).find('small').eq(1).text();
-                    const data = { magnet: link, size, quality };
+                    const data = { magnet: link, size:0, quality };
                     torrent.push(data);
                 });
 

@@ -81,15 +81,15 @@ def search():
 def get_home(language:str,page:int):
     page = 1 if page == None else page
     if language == "telugu":
-        url = "https://www.5movierulz.blog/category/telugu-featured/page/"+str(page)
+        url = "https://7movierulz.rest/category/telugu-featured/page/"+str(page)
     elif language == "hindi":
-        url = "https://www.5movierulz.blog/category/bollywood-featured/page/"+str(page)
+        url = "https://7movierulz.rest/category/bollywood-featured/page/"+str(page)
     elif language == "tamil":
-        url = "https://www.5movierulz.blog/category/tamil-featured/page/"+str(page)
+        url = "https://7movierulz.rest/category/tamil-featured/page/"+str(page)
     elif language == "malayalam":
-        url = "https://www.5movierulz.blog/category/malayalam-featured/page/"+str(page)
+        url = "https://7movierulz.rest/category/malayalam-featured/page/"+str(page)
     elif language == "english":
-        url = "https://www.5movierulz.blog/category/hollywood-featured/page/"+str(page)
+        url = "https://7movierulz.rest/category/hollywood-featured/page/"+str(page)
     else:
         url = None
     if url != None:
@@ -102,7 +102,7 @@ def get_home(language:str,page:int):
 
 @app.route("/")
 def home():
-    url = "https://www.5movierulz.blog/"
+    url = "https://7movierulz.rest/"
     data = get_page(url)
     total = len(data)
     main_data = {"status":True,"total_found":total,"url":url,"data":data}

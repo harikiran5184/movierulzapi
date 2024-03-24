@@ -170,7 +170,6 @@ async function getMovie(url) {
                     description,
                     image,
                     torrent,
-                    otherLinks,
                 };
 
                 resolve(data);

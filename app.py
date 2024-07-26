@@ -26,34 +26,38 @@ def get_page(url:str)->list:
         data.append(dat)
     return data
 def get_movie(url:str)->dict:
-    req = requests.get(url).content
-    soup = BeautifulSoup(req,"html.parser")
-    title = soup.find("h2",class_="entry-title").text.replace("Full Movie Watch Online Free","")
-    image = soup.find("img",class_="attachment-post-thumbnail size-post-thumbnail wp-post-image")['src']
-    description = soup.find_all("p")[4].text
-    cast=soup.find_all("p")[3].text
-    torrents = soup.find_all("a",class_="mv_button_css")
-    torrent = []
-    other_links = []
-    for tor in torrents:
-        link = tor['href']
-        size = tor.find_all("small")[0].text
-        quality = tor.find_all("small")[1].text
-        data = {"magnet":link,"size":size,"quality":quality}
-        torrent.append(data)
-    ps = soup.find_all("p")
-    # for p in ps:
-        # if p.find("strong"):
-        #     if "Watch Online –" in p.find("strong").text:
-        #         typ = p.find("strong").text.split("–")[-1]
-                
-        #         try:
-        #             lin = p.find("a")['href']
-        #             data = {"type":typ,"url":lin}
-        #             other_links.append(data)
-        #         except:
-        #             pass
-    data = {"status":True,"url":url,"title":title,"description":description,"image":image,"torrent":torrent,"other_links":[],"cast":cast}
+    try:
+        req = requests.get(url).content
+        soup = BeautifulSoup(req,"html.parser")
+        title = soup.find("h2",class_="entry-title").text.replace("Full Movie Watch Online Free","")
+        image = soup.find("img",class_="attachment-post-thumbnail size-post-thumbnail wp-post-image")['src']
+        description = soup.find_all("p")[4].text
+        cast=soup.find_all("p")[3].text
+        torrents = soup.find_all("a",class_="mv_button_css")
+        torrent = []
+        other_links = []
+        for tor in torrents:
+            link = tor['href']
+            size = tor.find_all("small")[0].text
+            quality = tor.find_all("small")[1].text
+            data = {"magnet":link,"size":size,"quality":quality}
+            torrent.append(data)
+        ps = soup.find_all("p")
+        # for p in ps:
+            # if p.find("strong"):
+            #     if "Watch Online –" in p.find("strong").text:
+            #         typ = p.find("strong").text.split("–")[-1]
+                    
+            #         try:
+            #             lin = p.find("a")['href']
+            #             data = {"type":typ,"url":lin}
+            #             other_links.append(data)
+            #         except:
+            #             pass
+        data = {"status":True,"url":url,"title":title,"description":description,"image":image,"torrent":torrent,"other_links":[],"cast":cast}
+    except:
+        data = {"status":True,"url":"https://media.istockphoto.com/id/185590965/photo/yellow-rubber-duck-for-bath-time.jpg?s=612x612&w=0&k=20&c=QoT-O5jbOugCgdQhLat15c0L9jCmRrSTiO9U50W_eQc=","title":"Server Has been Stopped","description":"No Description","image":"https://media.istockphoto.com/id/185590965/photo/yellow-rubber-duck-for-bath-time.jpg?s=612x612&w=0&k=20&c=QoT-O5jbOugCgdQhLat15c0L9jCmRrSTiO9U50W_eQc=","torrent":[],"other_links":[],"cast":"cast"}
+        
     return data
 
 
@@ -94,10 +98,14 @@ def get_home(language:str,page:int):
 
 @app.route("/")
 def home():
-    url = "https://5movierulz.cab/"
-    data = get_page(url)
-    total = len(data)
-    main_data = {"status":True,"total_found":total,"url":url,"data":data}
+    try:
+        url = "https://5movierulz.cab/"
+        data = get_page(url)
+        total = len(data)
+        main_data = {"status":True,"total_found":total,"url":url,"data":data}
+    except:
+        main_data = {"status":False,"total_found":0,"url":"","data":{}}
+        
     return jsonify(main_data)
 
 @app.route("/fetch",methods=["GET"])

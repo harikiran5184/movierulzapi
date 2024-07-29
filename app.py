@@ -3,7 +3,6 @@ from flask import *
 from flask_cors import CORS
 from bs4 import BeautifulSoup
 
-
 app = Flask(__name__)
 cors = CORS(app, resources={r"/*": {"origins": "*"}})
 
@@ -25,41 +24,36 @@ def get_page(url:str)->list:
         dat = {"title":title['title'],"image":img['src'],"link":title['href']}
         data.append(dat)
     return data
-def get_movie(url:str)->dict:
-    try:
-        req = requests.get(url).content
-        soup = BeautifulSoup(req,"html.parser")
-        title = soup.find("h2",class_="entry-title").text.replace("Full Movie Watch Online Free","")
-        image = soup.find("img",class_="attachment-post-thumbnail size-post-thumbnail wp-post-image")['src']
-        description = soup.find_all("p")[4].text
-        cast=soup.find_all("p")[3].text
-        torrents = soup.find_all("a",class_="mv_button_css")
-        torrent = []
-        other_links = []
-        for tor in torrents:
-            link = tor['href']
-            size = tor.find_all("small")[0].text
-            quality = tor.find_all("small")[1].text
-            data = {"magnet":link,"size":size,"quality":quality}
-            torrent.append(data)
-        ps = soup.find_all("p")
-        # for p in ps:
-            # if p.find("strong"):
-            #     if "Watch Online –" in p.find("strong").text:
-            #         typ = p.find("strong").text.split("–")[-1]
-                    
-            #         try:
-            #             lin = p.find("a")['href']
-            #             data = {"type":typ,"url":lin}
-            #             other_links.append(data)
-            #         except:
-            #             pass
-        # data = {"status":True,"url":url,"title":title,"description":description,"image":image,"torrent":torrent,"other_links":[],"cast":cast}
+def get_movie(url:str,check=False)->dict:
+    if check:
+        try:
+            req = requests.get(url).content
+            soup = BeautifulSoup(req,"html.parser")
+            title = soup.find("h2",class_="entry-title").text.replace("Full Movie Watch Online Free","")
+            image = soup.find("img",class_="attachment-post-thumbnail size-post-thumbnail wp-post-image")['src']
+            description = soup.find_all("p")[4].text
+            cast=soup.find_all("p")[3].text
+            torrents = soup.find_all("a",class_="mv_button_css")
+            torrent = []
+            other_links = []
+            for tor in torrents:
+                link = tor['href']
+                size = tor.find_all("small")[0].text
+                quality = tor.find_all("small")[1].text
+                data = {"magnet":link,"size":size,"quality":quality}
+                torrent.append(data)
+            ps = soup.find_all("p")
+            data = {"status":True,"url":url,"title":title,"description":description,"image":image,"torrent":torrent,"other_links":[],"cast":cast}
+            # data = {"status":True,"url":"https://media.istockphoto.com/id/185590965/photo/yellow-rubber-duck-for-bath-time.jpg?s=612x612&w=0&k=20&c=QoT-O5jbOugCgdQhLat15c0L9jCmRrSTiO9U50W_eQc=","title":"Server Has been Stopped","description":"No Description","image":"https://media.istockphoto.com/id/185590965/photo/yellow-rubber-duck-for-bath-time.jpg?s=612x612&w=0&k=20&c=QoT-O5jbOugCgdQhLat15c0L9jCmRrSTiO9U50W_eQc=","torrent":[],"other_links":[],"cast":"cast"}
+        except Exception as e :
+            print(e)
+            data = {"status":True,"url":"https://media.istockphoto.com/id/185590965/photo/yellow-rubber-duck-for-bath-time.jpg?s=612x612&w=0&k=20&c=QoT-O5jbOugCgdQhLat15c0L9jCmRrSTiO9U50W_eQc=","title":"Server Has been Stopped","description":"No Description","image":"https://media.istockphoto.com/id/185590965/photo/yellow-rubber-duck-for-bath-time.jpg?s=612x612&w=0&k=20&c=QoT-O5jbOugCgdQhLat15c0L9jCmRrSTiO9U50W_eQc=","torrent":[],"other_links":[],"cast":"cast"}
+            
+        return data
+    else:
+        print("check failed")
         data = {"status":True,"url":"https://media.istockphoto.com/id/185590965/photo/yellow-rubber-duck-for-bath-time.jpg?s=612x612&w=0&k=20&c=QoT-O5jbOugCgdQhLat15c0L9jCmRrSTiO9U50W_eQc=","title":"Server Has been Stopped","description":"No Description","image":"https://media.istockphoto.com/id/185590965/photo/yellow-rubber-duck-for-bath-time.jpg?s=612x612&w=0&k=20&c=QoT-O5jbOugCgdQhLat15c0L9jCmRrSTiO9U50W_eQc=","torrent":[],"other_links":[],"cast":"cast"}
-    except:
-        data = {"status":True,"url":"https://media.istockphoto.com/id/185590965/photo/yellow-rubber-duck-for-bath-time.jpg?s=612x612&w=0&k=20&c=QoT-O5jbOugCgdQhLat15c0L9jCmRrSTiO9U50W_eQc=","title":"Server Has been Stopped","description":"No Description","image":"https://media.istockphoto.com/id/185590965/photo/yellow-rubber-duck-for-bath-time.jpg?s=612x612&w=0&k=20&c=QoT-O5jbOugCgdQhLat15c0L9jCmRrSTiO9U50W_eQc=","torrent":[],"other_links":[],"cast":"cast"}
-        
-    return data
+        return data
 
 
 @app.route("/search",methods=["GET"])
@@ -118,6 +112,7 @@ def s():
 @app.route("/get",methods=["GET"])
 def get_s():
     a = request.args.get("url")
+    print(a)
     try:
         data = get_movie(a)
         return jsonify(data)
@@ -125,5 +120,29 @@ def get_s():
         data = {"status":False,"msg":"Unable to get data","error":e}
         return jsonify(data)
 
+@app.route("/get",methods=["POST"])
+def post_s():
+    request_data = request.get_json(force=True)
+    a = ""
+    token=""
+    try:
+        a=request_data['url']
+        token=request_data['token']
+        response=requests.post('http://localhost:3000/decryptAuthentication',json={"token":token})
+        response_data=response.json()
+        if response_data['status']: 
+            try:
+                data = get_movie(a,True)
+                return jsonify(data)
+            except Exception as e:
+                data = {"status":False,"msg":"Unable to get data","error":e}
+                return jsonify(data)
+        else:
+            return jsonify({"message": response_data['message'],"logout_status":True})
+    except:
+        return jsonify({"message":"cannot find url"})
+        
+    
+
 if __name__ == "__main__":
-    app.run()
+    app.run(debug=True)

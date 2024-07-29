@@ -128,7 +128,7 @@ def post_s():
     try:
         a=request_data['url']
         token=request_data['token']
-        response=requests.post('http://localhost:3000/decryptAuthentication',json={"token":token})
+        response=requests.post('https://seedr-stream-apis.vercel.app/decryptAuthentication',json={"token":token})
         response_data=response.json()
         if response_data['status']: 
             try:

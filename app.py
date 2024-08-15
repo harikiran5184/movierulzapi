@@ -59,7 +59,8 @@ def get_movie(url:str,check=False)->dict:
 @app.route("/search",methods=["GET"])
 def search():
     a = request.args.get("query")
-    url = f"https://5movierulz.cab/?s={a}"
+    page=request.args.get("p")
+    url = f"https://5movierulz.show/page/{page}?s={a}"
     try:
         data = get_page(url)
         total = len(data)

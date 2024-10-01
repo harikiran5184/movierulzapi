@@ -60,7 +60,7 @@ def get_movie(url:str,check=False)->dict:
 def search():
     a = request.args.get("query")
     page=request.args.get("p")
-    url = f"https://5movierulz.show/page/{page}?s={a}"
+    url = f"https://5movierulz.cab/page/{page}?s={a}"
     try:
         data = get_page(url)
         total = len(data)
@@ -73,13 +73,13 @@ def search():
 def get_home(language:str,page:int):
     page = 1 if page == None else page
     if language == "telugu":
-        url = "https://5movierulz.skin/telugu-movie/page/"+str(page)
+        url = "https://5movierulz.skin//category/telugu-featured/page/"+str(page)
     elif language == "hindi":
-        url = "https://5movierulz.skim/bollywood-movie-free/page/"+str(page)
+        url = "https://5movierulz.skin/category/bollywood-featured/page/"+str(page)
     elif language == "tamil":
-        url = "https://5movierulz.skin/tamil-movie-free/page/"+str(page)
+        url = "https://5movierulz.skin/category/tamil-featured/page/"+str(page)
     elif language == "malayalam":
-        url = "https://5movierulz.skin/malayalam-movie-online/page/"+str(page)
+        url = "https://5movierulz.skin/category/malayalam-featured/page/"+str(page)
     elif language == "english":
         url = "https://www.5movierulz.skin/category/hollywood-movie-2023/page/"+str(page)
     else:

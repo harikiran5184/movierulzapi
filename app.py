@@ -60,7 +60,7 @@ def get_movie(url:str,check=False)->dict:
 def search():
     a = request.args.get("query")
     page=request.args.get("p")
-    url = f"https://5movierulz.cab/page/{page}?s={a}"
+    url = f"https://5movierulz.skin/page/{page}?s={a}"
     try:
         data = get_page(url)
         total = len(data)

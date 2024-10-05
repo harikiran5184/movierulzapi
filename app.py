@@ -40,7 +40,7 @@ def get_movie(url:str,check=False)->dict:
             for tor in torrents:
                 link = tor['href']
                 size = tor.find_all("small")[0].text[:tor.find_all("small")[0].text.find("b")+1]
-                quality = tor.find_all("small")[0].text[tor.find_all("small")[0].text.find("b")+2:]
+                quality = tor.find_all("small")[0].text[tor.find_all("small")[0].text.find("b")+1:]
                 data = {"magnet":link,"size":size,"quality":quality}
                 torrent.append(data)
             data = {"status":True,"url":url,"title":title,"description":description,"image":image,"torrent":torrent,"other_links":[],"cast":cast}

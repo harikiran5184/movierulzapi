@@ -1,3 +1,5 @@
+#solution
+
 import requests
 from flask import *
 from flask_cors import CORS
@@ -18,7 +20,7 @@ def get_page(url:str)->list:
     soup = BeautifulSoup(req,"html.parser")
     divs = soup.find_all("div",class_="cont_display")
     data = []
-    for i in range(2,len(divs)):
+    for i in range(0,len(divs)):
         title = divs[i].find("a")
         img = divs[i].find("img")
         dat = {"title":title['title'],"image":img['src'],"link":title['href']}
@@ -27,22 +29,22 @@ def get_page(url:str)->list:
 def get_movie(url:str,check=False)->dict:
     if check:
         try:
+            print("started")
             req = requests.get(url).content
             soup = BeautifulSoup(req,"html.parser")
             title = soup.find("h2",class_="entry-title").text.replace("Full Movie Watch Online Free","")
             image = soup.find("img",class_="attachment-post-thumbnail size-post-thumbnail wp-post-image")['src']
-            description = soup.find_all("p")[4].text
-            cast=soup.find_all("p")[3].text
+            description = soup.find_all("p")[2].text
+            cast=soup.find_all("p")[1].text
+            cast=cast[cast.find("Directed"):]
             torrents = soup.find_all("a",class_="mv_button_css")
             torrent = []
-            other_links = []
             for tor in torrents:
                 link = tor['href']
-                size = tor.find_all("small")[0].text
-                quality = tor.find_all("small")[1].text
+                size = tor.find_all("small")[0].text[:tor.find_all("small")[0].text.find("b")+1]
+                quality = tor.find_all("small")[0].text[tor.find_all("small")[0].text.find("b")+1:]
                 data = {"magnet":link,"size":size,"quality":quality}
                 torrent.append(data)
-            ps = soup.find_all("p")
             data = {"status":True,"url":url,"title":title,"description":description,"image":image,"torrent":torrent,"other_links":[],"cast":cast}
             # data = {"status":True,"url":"https://media.istockphoto.com/id/185590965/photo/yellow-rubber-duck-for-bath-time.jpg?s=612x612&w=0&k=20&c=QoT-O5jbOugCgdQhLat15c0L9jCmRrSTiO9U50W_eQc=","title":"Server Has been Stopped","description":"No Description","image":"https://media.istockphoto.com/id/185590965/photo/yellow-rubber-duck-for-bath-time.jpg?s=612x612&w=0&k=20&c=QoT-O5jbOugCgdQhLat15c0L9jCmRrSTiO9U50W_eQc=","torrent":[],"other_links":[],"cast":"cast"}
         except Exception as e :
@@ -60,9 +62,10 @@ def get_movie(url:str,check=False)->dict:
 def search():
     a = request.args.get("query")
     page=request.args.get("p")
-    url = f"https://www.5movierulz.phd/page/{page}/?s={a}"
+    url = f"https://5movierulz.skin/search_movies/page/{page}?s={a}"
     try:
         data = get_page(url)
+        print(data)
         total = len(data)
         main_data = {"status":True,"total_found":total,"url":url,"data":data}
     except:
@@ -72,20 +75,22 @@ def search():
 @app.route("/<language>/<page>")
 def get_home(language:str,page:int):
     page = 1 if page == None else page
+    data=[]
     if language == "telugu":
-        url = "https://5movierulz.phd/telugu-movie/page/"+str(page)
+        url = "https://5movierulz.skin//category/telugu-featured/page/"+str(page)
     elif language == "hindi":
-        url = "https://5movierulz.phd/bollywood-movie-free/page/"+str(page)
+        url = "https://5movierulz.skin/category/bollywood-featured/page/"+str(page)
     elif language == "tamil":
-        url = "https://5movierulz.phd/tamil-movie-free/page/"+str(page)
+        url = "https://5movierulz.skin/category/tamil-featured/page/"+str(page)
     elif language == "malayalam":
-        url = "https://5movierulz.phd/malayalam-movie-online/page/"+str(page)
+        url = "https://5movierulz.skin/category/malayalam-featured/page/"+str(page)
     elif language == "english":
-        url = "https://www.5movierulz.phd/category/hollywood-movie-2023/page/"+str(page)
+        url = "https://www.5movierulz.skin/category/hollywood-movie-2023/page/"+str(page)
     else:
         url = None
     if url != None:
-        data = get_page(url)
+        [*original] = get_page(url)
+        data = [*original]
         total = len(data)
         main_data = {"status":True,"total_found":total,"url":url,"data":data}
     else:
@@ -95,7 +100,7 @@ def get_home(language:str,page:int):
 @app.route("/")
 def home():
     try:
-        url = "https://5movierulz.phd/"
+        url = "https://www.5movierulz.skin/"
         data = get_page(url)
         total = len(data)
         main_data = {"status":True,"total_found":total,"url":url,"data":data}

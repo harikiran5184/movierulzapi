@@ -92,7 +92,7 @@ def search():
 @app.route("/<language>/<page>")
 def get_home(language:str,page:int):
     getUrl=collection.find()[0]["url"]
-    page = 1 if page == None else page
+    page = 1 if page == 1 else page * 16
     if language == "telugu":
         url = getUrl+"/category/telugu-featured/page/"+str(page)
     elif language == "hindi":

@@ -31,15 +31,16 @@ def get_movie(url:str,check=False)->dict:
             soup = BeautifulSoup(req,"html.parser")
             title = soup.find("h2",class_="entry-title").text.replace("Full Movie Watch Online Free","")
             image = soup.find("img",class_="attachment-post-thumbnail size-post-thumbnail wp-post-image")['src']
-            description = soup.find_all("p")[4].text
-            cast=soup.find_all("p")[3].text
+            description = soup.find_all("p")[2].text
+            cast=soup.find_all("p")[1].text
             torrents = soup.find_all("a",class_="mv_button_css")
+            print(len(torrents))
             torrent = []
             other_links = []
             for tor in torrents:
                 link = tor['href']
-                size = tor.find_all("small")[0].text
-                quality = tor.find_all("small")[1].text
+                size = tor.find_all("small")[0].text[:tor.find_all("small")[0].text.find("b")+1]
+                quality = tor.find_all("small")[0].text[tor.find_all("small")[0].text.find("b")+1:]
                 data = {"magnet":link,"size":size,"quality":quality}
                 torrent.append(data)
             ps = soup.find_all("p")
@@ -60,7 +61,7 @@ def get_movie(url:str,check=False)->dict:
 def search():
     a = request.args.get("query")
     page=request.args.get("p")
-    url = f"https://www.5movierulz.phd/page/{page}/?s={a}"
+    url = f"https://www.5movierulz.mom/search_movies/page/{page}?s={a}"
     try:
         data = get_page(url)
         total = len(data)
@@ -73,15 +74,15 @@ def search():
 def get_home(language:str,page:int):
     page = 1 if page == None else page
     if language == "telugu":
-        url = "https://5movierulz.phd/telugu-movie/page/"+str(page)
+        url = "https://5movierulz.mom/category/telugu-featured/page/"+str(page)
     elif language == "hindi":
-        url = "https://5movierulz.phd/bollywood-movie-free/page/"+str(page)
+        url = "https://5movierulz.mom/category/bollywood-featured/page/"+str(page)
     elif language == "tamil":
-        url = "https://5movierulz.phd/tamil-movie-free/page/"+str(page)
+        url = "https://5movierulz.mom/category/tamil-featured/page/"+str(page)
     elif language == "malayalam":
-        url = "https://5movierulz.phd/malayalam-movie-online/page/"+str(page)
+        url = "https://5movierulz.mom/category/malayalam-featured/page/"+str(page)
     elif language == "english":
-        url = "https://www.5movierulz.phd/category/hollywood-movie-2023/page/"+str(page)
+        url = "https://www.5movierulz.mom/category/hollywood-featured/page/"+str(page)
     else:
         url = None
     if url != None:
@@ -95,7 +96,7 @@ def get_home(language:str,page:int):
 @app.route("/")
 def home():
     try:
-        url = "https://5movierulz.phd/"
+        url = "https://5movierulz.mom/"
         data = get_page(url)
         total = len(data)
         main_data = {"status":True,"total_found":total,"url":url,"data":data}

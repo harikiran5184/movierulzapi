@@ -23,7 +23,7 @@ def get_page(url:str)->list:
     divs = soup.find_all("div",class_="cont_display")
     data = []
     try:
-        for i in range(2,len(divs)):
+        for i in range(0,len(divs)):
             title = divs[i].find("a")
             oimg = divs[i].find("img")['src']
             img = oimg[:oimg.find(".jpg")+4]

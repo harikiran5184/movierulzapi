@@ -22,23 +22,37 @@ def get_page(url:str)->list:
     soup = BeautifulSoup(req,"html.parser")
     divs = soup.find_all("div",class_="cont_display")
     data = []
-    for i in range(2,len(divs)):
-        title = divs[i].find("a")
-        img = divs[i].find("img")
-        dat = {"title":title['title'],"image":img['src'],"link":title['href']}
-        data.append(dat)
-    return data
+    try:
+        for i in range(2,len(divs)):
+            title = divs[i].find("a")
+            oimg = divs[i].find("img")['src']
+            img = oimg[:oimg.find("jpg")+3]
+            print(img)
+            dat = {"title":title['title'],"image":img,"link":title['href']}
+            data.append(dat)
+        return data
+    except:
+        for i in range(2,len(divs)):
+            title = divs[i].find("a")
+            img = divs[i].find("img")
+            dat = {"title":title['title'],"image":img['src'],"link":title['href']}
+            data.append(dat)
+        return data
 def get_movie(url:str,check=False)->dict:
     if check:
         try:
+            getUrl=collection.find()[0]["url"]
             req = requests.get(url).content
             soup = BeautifulSoup(req,"html.parser")
             title = soup.find("h2",class_="entry-title").text.replace("Full Movie Watch Online Free","")
-            image = soup.find("img",class_="attachment-post-thumbnail size-post-thumbnail wp-post-image")['src']
+            oimg=soup.find("img",class_="attachment-post-thumbnail size-post-thumbnail wp-post-image")['src']
+            try:
+                image = getUrl+oimg[:oimg.find("jpg")+3]
+            except:
+                image = oimg
             description = soup.find_all("p")[2].text
             cast=soup.find_all("p")[1].text
             torrents = soup.find_all("a",class_="mv_button_css")
-            print(len(torrents))
             torrent = []
             other_links = []
             for tor in torrents:
@@ -51,7 +65,7 @@ def get_movie(url:str,check=False)->dict:
             data = {"status":True,"url":url,"title":title,"description":description,"image":image,"torrent":torrent,"other_links":[],"cast":cast}
             # data = {"status":True,"url":"https://media.istockphoto.com/id/185590965/photo/yellow-rubber-duck-for-bath-time.jpg?s=612x612&w=0&k=20&c=QoT-O5jbOugCgdQhLat15c0L9jCmRrSTiO9U50W_eQc=","title":"Server Has been Stopped","description":"No Description","image":"https://media.istockphoto.com/id/185590965/photo/yellow-rubber-duck-for-bath-time.jpg?s=612x612&w=0&k=20&c=QoT-O5jbOugCgdQhLat15c0L9jCmRrSTiO9U50W_eQc=","torrent":[],"other_links":[],"cast":"cast"}
         except Exception as e :
-            print(e)
+            print(e,"////")
             data = {"status":True,"url":"https://media.istockphoto.com/id/185590965/photo/yellow-rubber-duck-for-bath-time.jpg?s=612x612&w=0&k=20&c=QoT-O5jbOugCgdQhLat15c0L9jCmRrSTiO9U50W_eQc=","title":"Server Has been Stopped","description":"No Description","image":"https://media.istockphoto.com/id/185590965/photo/yellow-rubber-duck-for-bath-time.jpg?s=612x612&w=0&k=20&c=QoT-O5jbOugCgdQhLat15c0L9jCmRrSTiO9U50W_eQc=","torrent":[],"other_links":[],"cast":"cast"}
             
         return data
@@ -107,7 +121,8 @@ def home():
         data = get_page(url)
         total = len(data)
         main_data = {"status":True,"total_found":total,"url":url,"data":data}
-    except:
+    except Exception as e:
+        print(e)
         main_data = {"status":False,"total_found":0,"url":"","data":{}}
         
     return jsonify(main_data)

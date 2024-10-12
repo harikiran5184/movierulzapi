@@ -9,7 +9,6 @@ cors = CORS(app, resources={r"/*": {"origins": "*"}})
 client = MongoClient("mongodb+srv://hari:hari@cluster0.1socvoq.mongodb.net/")
 db = client['movierulz']
 collection=db['movierulz_urls']
-getUrl=collection.find()[0]["url"]
 
 def scape_link(url:str)->str:
     req = requests.get(url).content
@@ -66,6 +65,7 @@ def get_movie(url:str,check=False)->dict:
 def search():
     a = request.args.get("query")
     page=request.args.get("p")
+    getUrl=collection.find()[0]["url"]
     url = f"{getUrl}/search_movies/page/{page}?s={a}"
     try:
         data = get_page(url)
@@ -77,6 +77,7 @@ def search():
 
 @app.route("/<language>/<page>")
 def get_home(language:str,page:int):
+    getUrl=collection.find()[0]["url"]
     page = 1 if page == None else page
     if language == "telugu":
         url = getUrl+"/category/telugu-featured/page/"+str(page)
@@ -101,6 +102,7 @@ def get_home(language:str,page:int):
 @app.route("/")
 def home():
     try:
+        getUrl=collection.find()[0]["url"]
         url = getUrl
         data = get_page(url)
         total = len(data)

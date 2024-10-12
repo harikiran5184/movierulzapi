@@ -32,7 +32,7 @@ def get_page(url:str)->list:
             data.append(dat)
         return data
     except:
-        for i in range(0,len(divs)):
+        for i in range(2,len(divs)):
             title = divs[i].find("a")
             img = divs[i].find("img")
             dat = {"title":title['title'],"image":img['src'],"link":title['href']}
@@ -91,8 +91,15 @@ def search():
 
 @app.route("/<language>/<page>")
 def get_home(language:str,page:int):
-    getUrl=collection.find()[0]["url"]
-    page = 1 if page == 1 else int(page) * 16
+    lcollection=collection.find()[0]
+    getUrl=lcollection["url"]
+    pageSize=lcollection["pageSize"]
+    pageStatus=lcollection["pageStatus"]
+    if pageStatus:
+        page = 1 if int(page) == 1 else int(int(page) -1)*pageSize
+    else :
+        page = 1 if page == None else page
+        
     if language == "telugu":
         url = getUrl+"/category/telugu-featured/page/"+str(page)
     elif language == "hindi":

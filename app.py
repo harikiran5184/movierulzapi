@@ -32,7 +32,7 @@ def get_page(url:str)->list:
             data.append(dat)
         return data
     except:
-        for i in range(2,len(divs)):
+        for i in range(0,len(divs)):
             title = divs[i].find("a")
             img = divs[i].find("img")
             dat = {"title":title['title'],"image":img['src'],"link":title['href']}

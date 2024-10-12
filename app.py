@@ -26,7 +26,7 @@ def get_page(url:str)->list:
         for i in range(2,len(divs)):
             title = divs[i].find("a")
             oimg = divs[i].find("img")['src']
-            img = oimg[:oimg.find("jpg")+3]
+            img = oimg[:oimg.find(".jpg")+4]
             print(img)
             dat = {"title":title['title'],"image":img,"link":title['href']}
             data.append(dat)
@@ -47,7 +47,7 @@ def get_movie(url:str,check=False)->dict:
             title = soup.find("h2",class_="entry-title").text.replace("Full Movie Watch Online Free","")
             oimg=soup.find("img",class_="attachment-post-thumbnail size-post-thumbnail wp-post-image")['src']
             try:
-                image = getUrl+oimg[:oimg.find("jpg")+3]
+                image = getUrl+oimg[:oimg.find(".jpg")+4]
             except:
                 image = oimg
             description = soup.find_all("p")[2].text

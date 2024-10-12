@@ -2,9 +2,14 @@ import requests
 from flask import *
 from flask_cors import CORS
 from bs4 import BeautifulSoup
-
+from pymongo import MongoClient
 app = Flask(__name__)
 cors = CORS(app, resources={r"/*": {"origins": "*"}})
+
+client = MongoClient("mongodb+srv://hari:hari@cluster0.1socvoq.mongodb.net/")
+db = client['movierulz']
+collection=db['movierulz_urls']
+getUrl=collection.find()[0]["url"]
 
 def scape_link(url:str)->str:
     req = requests.get(url).content
@@ -61,7 +66,7 @@ def get_movie(url:str,check=False)->dict:
 def search():
     a = request.args.get("query")
     page=request.args.get("p")
-    url = f"https://www.5movierulz.mom/search_movies/page/{page}?s={a}"
+    url = f"{getUrl}/search_movies/page/{page}?s={a}"
     try:
         data = get_page(url)
         total = len(data)
@@ -74,15 +79,15 @@ def search():
 def get_home(language:str,page:int):
     page = 1 if page == None else page
     if language == "telugu":
-        url = "https://5movierulz.mom/category/telugu-featured/page/"+str(page)
+        url = getUrl+"/category/telugu-featured/page/"+str(page)
     elif language == "hindi":
-        url = "https://5movierulz.mom/category/bollywood-featured/page/"+str(page)
+        url = getUrl+"/category/bollywood-featured/page/"+str(page)
     elif language == "tamil":
-        url = "https://5movierulz.mom/category/tamil-featured/page/"+str(page)
+        url = getUrl+"/category/tamil-featured/page/"+str(page)
     elif language == "malayalam":
-        url = "https://5movierulz.mom/category/malayalam-featured/page/"+str(page)
+        url = getUrl+"/category/malayalam-featured/page/"+str(page)
     elif language == "english":
-        url = "https://www.5movierulz.mom/category/hollywood-featured/page/"+str(page)
+        url = getUrl+"/category/hollywood-featured/page/"+str(page)
     else:
         url = None
     if url != None:
@@ -96,7 +101,7 @@ def get_home(language:str,page:int):
 @app.route("/")
 def home():
     try:
-        url = "https://5movierulz.mom/"
+        url = getUrl
         data = get_page(url)
         total = len(data)
         main_data = {"status":True,"total_found":total,"url":url,"data":data}
